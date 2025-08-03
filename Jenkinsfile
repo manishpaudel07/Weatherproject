@@ -6,8 +6,13 @@ pipeline {
         nodejs 'Node'
     }
 
-    triggers{
-    githubPush()
+    environment {
+        DOCKER_IMAGE = 'weather-app'
+        DOCKER_TAG = "${BUILD_NUMBER}"
+    }
+
+    triggers {
+        githubPush()
     }
 
     stages {
@@ -21,6 +26,11 @@ pipeline {
             steps {
                 sh 'mvn clean package -DskipTests'
             }
+            post {
+                failure {
+                    echo 'Backend build failed'
+                }
+            }
         }
 
         stage('Frontend Build') {
@@ -30,12 +40,32 @@ pipeline {
                     sh 'npm run build'
                 }
             }
+            post {
+                failure {
+                    echo 'Frontend build failed'
+                }
+            }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t weather-app .'
+                sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
             }
+            post {
+                failure {
+                    echo 'Docker build failed'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully'
+        }
+        failure {
+            echo 'Pipeline failed'
         }
     }
 }
