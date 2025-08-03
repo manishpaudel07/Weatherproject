@@ -6,6 +6,10 @@ pipeline {
         nodejs 'Node'
     }
 
+    triggers{
+    githubPush()
+    }
+
     stages {
         stage('Checkout') {
             steps {
