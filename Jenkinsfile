@@ -21,7 +21,7 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Checkout') {
+        stage('JAVA_HOME') {
             steps {
                 sh 'echo $JAVA_HOME'
             }
