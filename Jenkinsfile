@@ -28,10 +28,6 @@ pipeline {
             }
         }
         stage('Backend Build') {
-            environment {
-                JAVA_HOME = '/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home'
-                PATH = "${JAVA_HOME}/bin:${env.PATH}"
-            }
             steps {
                 sh 'mvn clean package -DskipTests'
             }
