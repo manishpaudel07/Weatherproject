@@ -21,7 +21,11 @@ pipeline {
                 checkout scm
             }
         }
-
+        stage('Checkout') {
+            steps {
+                sh 'echo $JAVA_HOME'
+            }
+        }
         stage('Backend Build') {
             steps {
                 sh 'mvn clean package -DskipTests'
