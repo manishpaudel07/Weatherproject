@@ -8,8 +8,6 @@ pipeline {
     }
 
    environment {
-       JAVA_HOME = tool('JDK21')
-       PATH = "${JAVA_HOME}/bin:${env.PATH}"
        DOCKER_IMAGE = 'weather-app'
        DOCKER_TAG = "${BUILD_NUMBER}"
    }
@@ -24,16 +22,16 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Backend Build') {
-            steps {
-                sh 'mvn clean package -DskipTests'
-            }
-            post {
-                failure {
-                    echo 'Backend build failed'
-                }
-            }
-        }
+       stage('Backend Build') {
+           steps {
+               sh 'docker run --rm -v $PWD:/app -w /app maven:3.8.4-openjdk-21 mvn clean package -DskipTests'
+           }
+           post {
+               failure {
+                   echo 'Backend build failed'
+               }
+           }
+       }
 
         stage('Frontend Build') {
             steps {
