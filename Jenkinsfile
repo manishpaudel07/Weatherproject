@@ -7,10 +7,12 @@ pipeline {
         jdk 'JDK21'
     }
 
-    environment {
-        DOCKER_IMAGE = 'weather-app'
-        DOCKER_TAG = "${BUILD_NUMBER}"
-    }
+   environment {
+       JAVA_HOME = tool('JDK21')
+       PATH = "${JAVA_HOME}/bin:${env.PATH}"
+       DOCKER_IMAGE = 'weather-app'
+       DOCKER_TAG = "${BUILD_NUMBER}"
+   }
 
     triggers {
         githubPush()
@@ -20,11 +22,6 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-            }
-        }
-        stage('JAVA_HOME') {
-            steps {
-                sh 'echo $JAVA_HOME'
             }
         }
         stage('Backend Build') {
