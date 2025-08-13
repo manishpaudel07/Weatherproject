@@ -1,5 +1,5 @@
 # Stage 1: Build the Spring Boot backend
-FROM maven:3.8.4-openjdk-17 AS backend-build
+FROM maven:3.8.4-openjdk-21 AS backend-build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
