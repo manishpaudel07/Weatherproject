@@ -24,7 +24,7 @@ pipeline {
         }
        stage('Backend Build') {
            steps {
-               sh 'docker run --rm -v $PWD:/app -w /app maven:3.8.4-eclipse-temurin-21 mvn clean package -DskipTests'
+               sh 'docker run --rm -v $PWD:/app -w /app maven:3.9.6-eclipse-temurin-21 mvn clean package -DskipTests'
            }
            post {
                failure {
@@ -70,3 +70,4 @@ pipeline {
         }
     }
 }
+
