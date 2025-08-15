@@ -35,7 +35,7 @@ pipeline {
 
         stage('Skip Build for Rollback') {
             when {
-                params.IS_ROLLBACK == true
+                expression { params.IS_ROLLBACK == true }
             }
             steps {
                 echo "Rollback mode enabled. Skipping build stages and proceeding to deployment with build #${params.ROLLBACK_TO}"
@@ -44,7 +44,7 @@ pipeline {
 
         stage('Backend Build') {
             when {
-                not { params.IS_ROLLBACK }
+                expression { return !params.IS_ROLLBACK }
             }
             steps {
                 sh '''
@@ -67,7 +67,7 @@ pipeline {
 
         stage('Backend Tests') {
             when {
-                not { params.IS_ROLLBACK }
+                expression { return !params.IS_ROLLBACK }
             }
             steps {
                 sh '''
@@ -90,7 +90,7 @@ pipeline {
 
         stage('Frontend Build') {
             when {
-                not { params.IS_ROLLBACK }
+                expression { return !params.IS_ROLLBACK }
             }
             steps {
                 sh '''
@@ -113,7 +113,7 @@ pipeline {
 
         stage('Frontend Tests') {
             when {
-                not { params.IS_ROLLBACK }
+                expression { return !params.IS_ROLLBACK }
             }
             steps {
                 sh '''
@@ -136,7 +136,7 @@ pipeline {
 
         stage('Docker Build') {
             when {
-                not { params.IS_ROLLBACK }
+                expression { return !params.IS_ROLLBACK }
             }
             steps {
                 script {
@@ -156,7 +156,7 @@ pipeline {
 
         stage('Security Scan') {
             when {
-                not { params.IS_ROLLBACK }
+                expression { return !params.IS_ROLLBACK }
             }
             steps {
                 script {
