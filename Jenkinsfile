@@ -128,7 +128,7 @@ pipeline {
             post {
                 always {
                     // Try to publish frontend test results, but don't fail if none exist
-                    junit allowEmptyResults: true, testResults: '**/test-results.xml'
+                    junit allowEmptyResults: true, testResults: '**/junit.xml'
                 }
                 failure {
                     echo 'Frontend tests failed'
