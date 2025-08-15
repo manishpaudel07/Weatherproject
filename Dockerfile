@@ -24,5 +24,5 @@ FROM openjdk:21-slim
 WORKDIR /app
 COPY --from=backend-build /app/target/*.jar app.jar
 COPY --from=frontend-build /app/build /app/static
-EXPOSE 8080
+EXPOSE 8081
 CMD ["java", "-jar", "app.jar"]
