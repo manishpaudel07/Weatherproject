@@ -99,7 +99,7 @@ pipeline {
                 -v $PWD/weather-frontend:/app \
                 -w /app \
                 node:18-alpine \
-                sh -c "npm ci && npm run build"
+                sh -c "npm install && npm run build"
                 '''
             }
             post {
