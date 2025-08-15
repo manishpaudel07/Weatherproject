@@ -80,15 +80,8 @@ pipeline {
             }
             post {
                 always {
-                    // Optional: Only try to publish test results if they exist
-                    script {
-                        def testResults = findFiles(glob: '**/target/surefire-reports/**/*.xml')
-                        if (!testResults.isEmpty()) {
-                            junit '**/target/surefire-reports/**/*.xml'
-                        } else {
-                            echo 'No test results found to publish'
-                        }
-                    }
+                    // Try to publish test results, but don't fail if none exist
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/**/*.xml'
                 }
                 failure {
                     echo 'Backend tests failed'
@@ -134,15 +127,8 @@ pipeline {
             }
             post {
                 always {
-                    // Optional: Only try to publish frontend test results if they exist
-                    script {
-                        def frontendTestResults = findFiles(glob: '**/test-results.xml')
-                        if (!frontendTestResults.isEmpty()) {
-                            junit '**/test-results.xml'
-                        } else {
-                            echo 'No frontend test results found to publish'
-                        }
-                    }
+                    // Try to publish frontend test results, but don't fail if none exist
+                    junit allowEmptyResults: true, testResults: '**/test-results.xml'
                 }
                 failure {
                     echo 'Frontend tests failed'
