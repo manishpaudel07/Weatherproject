@@ -8,9 +8,15 @@ RUN mvn clean package -DskipTests
 # Stage 2: Build the React frontend
 FROM node:18 AS frontend-build
 WORKDIR /app
+# First copy only package files for better caching
 COPY weather-frontend/package*.json ./
+# Remove package-lock.json to avoid conflicts
+RUN rm -f package-lock.json
+# Install dependencies and update lockfile
 RUN npm install
+# Copy the rest of the application
 COPY weather-frontend/ .
+# Build the application
 RUN npm run build
 
 # Stage 3: Final image
