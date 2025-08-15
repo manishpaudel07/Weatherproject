@@ -80,7 +80,15 @@ pipeline {
             }
             post {
                 always {
-                    publishTestResults testResultsPattern: 'target/surefire-reports/*.xml'
+                    // Optional: Only try to publish test results if they exist
+                    script {
+                        def testResults = findFiles(glob: '**/target/surefire-reports/**/*.xml')
+                        if (!testResults.isEmpty()) {
+                            junit '**/target/surefire-reports/**/*.xml'
+                        } else {
+                            echo 'No test results found to publish'
+                        }
+                    }
                 }
                 failure {
                     echo 'Backend tests failed'
@@ -126,7 +134,15 @@ pipeline {
             }
             post {
                 always {
-                    publishTestResults testResultsPattern: 'weather-frontend/coverage/lcov-report/*.xml'
+                    // Optional: Only try to publish frontend test results if they exist
+                    script {
+                        def frontendTestResults = findFiles(glob: '**/test-results.xml')
+                        if (!frontendTestResults.isEmpty()) {
+                            junit '**/test-results.xml'
+                        } else {
+                            echo 'No frontend test results found to publish'
+                        }
+                    }
                 }
                 failure {
                     echo 'Frontend tests failed'
