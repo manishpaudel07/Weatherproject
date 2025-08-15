@@ -179,12 +179,12 @@ pipeline {
                         echo "Rolling back to build #${params.ROLLBACK_TO}"
                         sh "docker stop weather-app-container || true"
                         sh "docker rm weather-app-container || true"
-                        sh "docker run -d --name weather-app-container -p 8080:8080 ${DOCKER_IMAGE}:${params.ROLLBACK_TO}"
+                        sh "docker run -d --name weather-app-container -p 8081:8081 ${DOCKER_IMAGE}:${params.ROLLBACK_TO}"
                     } else {
                         echo "Deploying build #${BUILD_NUMBER}"
                         sh "docker stop weather-app-container || true"
                         sh "docker rm weather-app-container || true"
-                        sh "docker run -d --name weather-app-container -p 8080:8080 ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                        sh "docker run -d --name weather-app-container -p 8081:8081 ${DOCKER_IMAGE}:${DOCKER_TAG}"
                     }
                 }
             }
