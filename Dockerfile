@@ -6,7 +6,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Build the React frontend
-FROM node:16 AS frontend-build
+FROM node:18 AS frontend-build
 WORKDIR /app
 COPY weather-frontend/package*.json ./
 RUN npm install
