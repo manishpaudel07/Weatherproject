@@ -122,7 +122,7 @@ pipeline {
                 -v $PWD/weather-frontend:/app \
                 -w /app \
                 node:18-alpine \
-                sh -c "npm install && npm test -- --coverage --watchAll=false"
+                sh -c "npm install && npm run test:ci"
                 '''
             }
             post {
