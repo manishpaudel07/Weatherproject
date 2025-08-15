@@ -21,6 +21,7 @@ RUN npm run build
 
 # Stage 3: Final image
 FROM openjdk:21-slim
+RUN apt-get update && apt-get upgrade -y
 WORKDIR /app
 COPY --from=backend-build /app/target/*.jar app.jar
 COPY --from=frontend-build /app/build /app/static

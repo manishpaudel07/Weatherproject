@@ -6,12 +6,6 @@ pipeline {
         booleanParam(name: 'IS_ROLLBACK', defaultValue: false, description: 'Check to perform a rollback')
     }
 
-    tools {
-        maven 'Maven'
-        nodejs 'Node'
-        jdk 'JDK21'
-    }
-
     environment {
         DOCKER_IMAGE = 'weather-app'
         DOCKER_TAG = "${params.IS_ROLLBACK ? params.ROLLBACK_TO : BUILD_NUMBER}"
