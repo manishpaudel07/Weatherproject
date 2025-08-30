@@ -7,8 +7,13 @@ function App() {
   const [error, setError] = useState("");
 
   const fetchWeather = async () => {
+    if (!city.trim()) {
+      setWeather(null);
+      setError("Please enter a city name.");
+      return;
+    }
     try {
-      const response = await axios.get(`http://localhost:8080/weather/${city}`);
+      const response = await axios.get(`http://localhost:8081/weather/${city}`);
       setWeather(response.data);
       setError("");
     } catch (err) {
@@ -31,8 +36,10 @@ function App() {
       {weather && (
         <div>
           <h2>{weather.name}</h2>
-          <p>Temperature: {weather.temperature}°C</p>
-          <p>Description: {weather.description}</p>
+          <p>Temperature: {weather.main.temp}°C</p>
+          <p>Description: {weather.weather?.[0]?.description}</p>
+          <p>TimeZone: {weather.timezone}</p>
+          <p>Name of the city: {weather.name}</p>
         </div>
       )}
     </div>
