@@ -17,4 +17,13 @@ public class Wind {
 
     @JsonProperty("gust")
     private double gust;
+
+    @Override
+    public String toString() {
+        return "Wind{" +
+                "speed=" + speed +
+                ", deg=" + deg +
+                ", gust=" + gust +
+                '}';
+    }
 }

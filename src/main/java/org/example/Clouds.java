@@ -10,4 +10,11 @@ import lombok.Setter;
 public class Clouds {
     @JsonProperty("all")
     private int all;
+
+    @Override
+    public String toString() {
+        return "Clouds{" +
+                "all=" + all +
+                '}';
+    }
 }

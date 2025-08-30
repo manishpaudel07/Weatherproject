@@ -16,4 +16,9 @@ public class Weather {
     private String description;
     @JsonProperty("icon")
     private String icon;
+
+    @Override
+    public String toString() {
+        return "[" + "id=" + id + ", main=" + main + ", description=" + description + ", icon=" + icon + "]";
+    }
 }

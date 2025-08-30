@@ -1,6 +1,5 @@
 package org.example;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,24 +19,20 @@ public class WeatherService {
     private String WEATHER_API_URL;
 
     public WeatherResponse getWeather(String city) throws IOException, InterruptedException {
-      String url = String.format(WEATHER_API_URL, city, API_KEY);
+        String url = String.format(WEATHER_API_URL, city, API_KEY);
 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .build();
+        try (HttpClient client = HttpClient.newHttpClient()) {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("Response Body: " + response.body());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Response Body: " + response.body());
 
-        ObjectMapper mapper = new ObjectMapper();
-        WeatherResponse weatherResponse = mapper.readValue(response.body(), WeatherResponse.class);
-        System.out.println("Weather Response: " + weatherResponse.toString());
-       System.out.println("Weather Description: " + weatherResponse.getWeather().getFirst().getDescription());
-        return weatherResponse;
-
-
+            ObjectMapper mapper = new ObjectMapper();
+            WeatherResponse weatherResponse = mapper.readValue(response.body(), WeatherResponse.class);
+            System.out.println("Weather Response: " + weatherResponse.toString());
+            return weatherResponse;
+        }
     }
-
-
 }

@@ -31,4 +31,18 @@ public class Main {
 
     @JsonProperty("grnd_level")
     private int grndLevel;
+
+    @Override
+    public String toString() {
+        return "Main{" +
+                "temp=" + temp +
+                ", feelsLike=" + feelsLike +
+                ", tempMin=" + tempMin +
+                ", tempMax=" + tempMax +
+                ", pressure=" + pressure +
+                ", humidity=" + humidity +
+                ", seaLevel=" + seaLevel +
+                ", grndLevel=" + grndLevel +
+                '}';
+    }
 }

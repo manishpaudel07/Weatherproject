@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/weather")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class WeatherController {
     @Autowired
     private WeatherService weatherService;
