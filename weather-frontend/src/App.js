@@ -36,7 +36,12 @@ function App() {
       {weather && (
         <div>
           <h2>{weather.name}</h2>
-          <p>Temperature: {weather.main.temp}°C</p>
+          <p>
+            Temperature:{" "}
+            {weather.main && typeof weather.main.temp !== "undefined"
+              ? `${weather.main.temp}°C`
+              : "N/A"}
+          </p>
           <p>Description: {weather.weather?.[0]?.description}</p>
           <p>TimeZone: {weather.timezone}</p>
           <p>Name of the city: {weather.name}</p>
