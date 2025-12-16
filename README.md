@@ -34,7 +34,7 @@ The project follows a modern microservices architecture:
 ### Backend
 - **Framework**: Spring Boot 3.3.3
 - **Language**: Java 21
-- **Build Tool**: Maven 3.9.6
+- **Build Tool**: Maven
 - **Dependencies**:
   - Spring Web
   - Spring Data JPA
@@ -47,7 +47,6 @@ The project follows a modern microservices architecture:
 - **Framework**: React 18.2.0
 - **HTTP Client**: Axios
 - **Build Tool**: Create React App
-- **UI Components**: AG Grid (for potential data grid features)
 - **Testing**: Jest, React Testing Library
 
 ### DevOps
@@ -60,7 +59,7 @@ The project follows a modern microservices architecture:
 
 - Java 21 or higher
 - Node.js 18 or higher
-- Maven 3.9.6 or higher
+- Maven (or use Maven wrapper included in project)
 - Docker (optional, for containerized deployment)
 - OpenWeatherMap API key
 
