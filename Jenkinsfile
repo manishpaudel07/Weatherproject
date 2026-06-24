@@ -202,7 +202,7 @@ pipeline {
             steps {
                 script {
                     sleep(time: 30, unit: 'SECONDS')
-                    def response = sh(script: 'curl -f http://localhost:8080/health || echo "Health check failed"', returnStdout: true).trim()
+                    def response = sh(script: 'curl -f http://localhost:8081/actuator/health || echo "Health check failed"', returnStdout: true).trim()
                     if (response.contains("Health check failed")) {
                         error("Application health check failed")
                     } else {

@@ -32,6 +32,22 @@ public class Main {
     @JsonProperty("grnd_level")
     private int grndLevel;
 
+    public double getTempFahrenheit() {
+        return (temp * 9.0 / 5.0) + 32;
+    }
+
+    public double getFeelsLikeFahrenheit() {
+        return (feelsLike * 9.0 / 5.0) + 32;
+    }
+
+    public double getTempMinFahrenheit() {
+        return (tempMin * 9.0 / 5.0) + 32;
+    }
+
+    public double getTempMaxFahrenheit() {
+        return (tempMax * 9.0 / 5.0) + 32;
+    }
+
     @Override
     public String toString() {
         return "Main{" +

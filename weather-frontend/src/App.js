@@ -13,7 +13,7 @@ function App() {
       return;
     }
     try {
-      const response = await axios.get(`http://localhost:8081/weather/${city}`);
+      const response = await axios.get(`http://localhost:8082/weather/${city}`);
       setWeather(response.data);
       setError("");
     } catch (err) {
@@ -39,7 +39,7 @@ function App() {
           <p>
             Temperature:{" "}
             {weather.main && typeof weather.main.temp !== "undefined"
-              ? `${weather.main.temp}°C`
+              ? `${weather.main.temp}°C / ${weather.main.tempFahrenheit?.toFixed(2)}°F`
               : "N/A"}
           </p>
           <p>Description: {weather.weather?.[0]?.description}</p>
