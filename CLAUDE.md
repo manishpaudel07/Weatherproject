@@ -14,8 +14,8 @@ multi-stage build produces a single container serving both frontend static files
 
 ```bash
 mvn clean package -DskipTests   # build JAR
-mvn test                         # run tests
-java -jar target/*.jar           # run locally on port 8082
+mvn test                         # run tests (no backend tests currently exist)
+java -jar target/*.jar           # run locally on port 8081 (set by application.properties)
 ```
 
 ### Frontend (run from `weather-frontend/`)
@@ -24,8 +24,9 @@ java -jar target/*.jar           # run locally on port 8082
 npm install
 npm start                        # dev server on port 3000
 npm run build                    # production build → weather-frontend/build/
-npm test                         # interactive test run
-CI=true npm run test:ci          # headless with coverage (used in CI)
+npm test                         # interactive test run (watches by default)
+CI=true npm run test:ci          # headless with coverage + JUnit XML output (used in CI)
+npx jest --testPathPattern=App   # run a single test file
 ```
 
 ### Docker
@@ -38,28 +39,30 @@ docker build -t weather-app:latest .   # multi-stage build; exposes port 8081
 
 **Backend** — Spring Boot 3.3.3, Java 21, Maven.
 
-- `WeatherController` — single GET endpoint `/weather/{city}`, CORS open to all origins.
-- `WeatherService` — calls `https://api.openweathermap.org/data/2.5/weather` via Java `HttpClient`; Caffeine cache (max
-  100 entries, 10-min TTL).
-- Config in `src/main/resources/application.properties`; the API key is read from `WEATHER_API_KEY` env var.
-- Swagger UI available at `/swagger-ui.html`.
+- `WeatherController` — single GET endpoint `/weather/{city}`, CORS open to all origins. Returns `400` with a plain string on any exception.
+- `WeatherService` — calls OpenWeatherMap via Java `HttpClient`; caches by `city.toLowerCase()` with Caffeine (max 100 entries, 10-min TTL). Cache miss is logged at INFO level.
+- `WeatherResponse` and sibling POJOs (`Main`, `Coord`, `Wind`, `Clouds`, `Sys`, `Weather`) — Jackson-deserialized from the external API response. All use `@JsonIgnoreProperties(ignoreUnknown = true)` and Lombok `@Getter`/`@Setter`. The `Main` class adds computed Fahrenheit conversion methods (`getTempFahrenheit()`, etc.) used directly by the frontend.
+- Config in `src/main/resources/application.properties`; the API key comes from `WEATHER_API_KEY` env var (defaults to empty string if unset).
+- Swagger UI at `/swagger-ui.html`; raw OpenAPI docs at `/api-docs`. Actuator health at `/actuator/health`.
 
-**Frontend** — React 18, Create React App, axios for HTTP, ag-grid-react for data display.
+**Frontend** — React 18, Create React App, axios for HTTP.
 
-- In development, `App.js` calls `http://localhost:8081/weather/{city}` directly (hardcoded).
-- The production Docker image copies the frontend build into `src/main/resources/static/` so Spring Boot serves it as
-  static content — no separate frontend server needed.
+- `App.js` hardcodes `http://localhost:8082/weather/{city}` as the backend URL — **this differs from the actual backend port (8081)**; update if running locally without the proxy.
+- `MyConfirmationModal.js` and `Translator.js` exist in `src/` but are not currently imported by `App.js`.
+- Frontend tests (`App.test.js`) use `@testing-library/react` and test only rendering. Axios is auto-mocked via `__mocks__/axios.js` (returns `{ data: {} }` by default).
+- Production: frontend build is copied into `src/main/resources/static/` during the Docker build so Spring Boot serves it — no separate server needed.
 
 **Data flow:**
 
 ```
 React (port 3000 dev / static in prod)
   → GET /weather/{city}
-Spring Boot (port 8082 local, 8081 container)
-  → OpenWeatherMap API (external)
+Spring Boot (port 8081 local + container)
+  → OpenWeatherMap API (?units=metric → temperatures in °C)
   ← JSON deserialized into WeatherResponse POJOs
+  ← Main.getTempFahrenheit() computed on the fly
   ← cached & returned
-React renders temperature, description, timezone, city name
+React renders temp in both °C and °F, description, timezone, city name
 ```
 
 ## Deployment
@@ -82,3 +85,9 @@ build parameter.
 | Variable          | Purpose                                      |
 |-------------------|----------------------------------------------|
 | `WEATHER_API_KEY` | OpenWeatherMap API key (required at runtime) |
+
+## Known Quirks
+
+- The hardcoded backend URL in `App.js` (`localhost:8082`) does not match the actual server port (`8081` per `application.properties`). Local dev requires either changing one or setting up a proxy.
+- There are no backend unit/integration tests. `mvn test` will succeed vacuously.
+- `WeatherInformation.java` is unused (dead code).
