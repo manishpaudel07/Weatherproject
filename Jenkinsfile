@@ -16,7 +16,8 @@ pipeline {
         DOCKER_IMAGE = 'weather-app'
         DOCKER_TAG = "${params.IS_ROLLBACK ? params.ROLLBACK_TO : BUILD_NUMBER}"
         WEATHER_API_KEY = credentials('WEATHER_API_KEY')
-        PATH = "/usr/local/bin:/opt/homebrew/bin:${PATH}"
+        JAVA_HOME = '/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home'
+        PATH = "/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home/bin:/usr/local/bin:/opt/homebrew/bin:${PATH}"
     }
 
     triggers {
