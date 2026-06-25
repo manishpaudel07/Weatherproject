@@ -6,16 +6,17 @@ pipeline {
         booleanParam(name: 'IS_ROLLBACK', defaultValue: false, description: 'Check to perform a rollback')
     }
 
-     tools {
-            maven 'Maven'
-            nodejs 'Node'
-            jdk 'JDK21'
-        }
+    tools {
+        maven 'Maven'
+        nodejs 'Node'
+        jdk 'JDK21'
+    }
 
     environment {
         DOCKER_IMAGE = 'weather-app'
         DOCKER_TAG = "${params.IS_ROLLBACK ? params.ROLLBACK_TO : BUILD_NUMBER}"
         WEATHER_API_KEY = credentials('WEATHER_API_KEY')
+        PATH = "/usr/local/bin:/opt/homebrew/bin:${PATH}"
     }
 
     triggers {
@@ -48,13 +49,7 @@ pipeline {
                 expression { return !params.IS_ROLLBACK }
             }
             steps {
-                sh '''
-                docker run --rm \
-                -v $PWD:/app \
-                -w /app \
-                maven:3.9.6-eclipse-temurin-21 \
-                mvn clean package -DskipTests
-                '''
+                sh 'mvn clean package -DskipTests'
             }
             post {
                 failure {
@@ -71,17 +66,10 @@ pipeline {
                 expression { return !params.IS_ROLLBACK }
             }
             steps {
-                sh '''
-                docker run --rm \
-                -v $PWD:/app \
-                -w /app \
-                maven:3.9.6-eclipse-temurin-21 \
-                mvn test
-                '''
+                sh 'mvn test'
             }
             post {
                 always {
-                    // Try to publish test results, but don't fail if none exist
                     junit allowEmptyResults: true, testResults: '**/target/surefire-reports/**/*.xml'
                 }
                 failure {
@@ -95,13 +83,9 @@ pipeline {
                 expression { return !params.IS_ROLLBACK }
             }
             steps {
-                sh '''
-                docker run --rm \
-                -v $PWD/weather-frontend:/app \
-                -w /app \
-                node:18-alpine \
-                sh -c "npm install && npm run build"
-                '''
+                dir('weather-frontend') {
+                    sh 'npm install && npm run build'
+                }
             }
             post {
                 failure {
@@ -118,17 +102,12 @@ pipeline {
                 expression { return !params.IS_ROLLBACK }
             }
             steps {
-                sh '''
-                docker run --rm \
-                -v $PWD/weather-frontend:/app \
-                -w /app \
-                node:18-alpine \
-                sh -c "npm install && npm run test:ci"
-                '''
+                dir('weather-frontend') {
+                    sh 'npm install && npm run test:ci'
+                }
             }
             post {
                 always {
-                    // Try to publish frontend test results, but don't fail if none exist
                     junit allowEmptyResults: true, testResults: '**/junit.xml'
                 }
                 failure {
