@@ -13,7 +13,8 @@ function App() {
       return;
     }
     try {
-      const response = await axios.get(`http://localhost:8082/weather/${city}`);
+      const baseUrl = process.env.REACT_APP_API_URL || '';
+      const response = await axios.get(`${baseUrl}/weather/${city}`);
       setWeather(response.data);
       setError("");
     } catch (err) {
